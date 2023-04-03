@@ -1,0 +1,528 @@
+//zmiana koloru tła po kliknieciu
+package oc;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.util.ArrayList;
+import java.util.List;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfFloat;
+import org.opencv.core.MatOfInt;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.highgui.HighGui;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class Zmienianie_kolorow extends EqualizeHist{
+JLabel Orginal_l = new JLabel("Orygianlne");
+String a = "C:/logo.jpg";
+String odejmowane = "C:/basket_x.png";
+String orginal = "C:/oryginalny.png";
+BufferedImage Poziome = null;
+BufferedImage Pionowe = null;
+private JFrame frmObrazyCyfrowe;
+public static void main(String[] args) {
+EventQueue.invokeLater(new Runnable() {
+public void run() {
+try {
+Zmienianie_kolorow window = new Zmienianie_kolorow();
+window.frmObrazyCyfrowe.setVisible(true);
+} catch (Exception e) {
+e.printStackTrace();}}});}
+public Zmienianie_kolorow() {
+initialize();
+}
+private void initialize() {	
+frmObrazyCyfrowe = new JFrame();
+frmObrazyCyfrowe.setTitle("Obrazy cyfrowe\r\n");
+frmObrazyCyfrowe.setBounds(100, 100, 1189, 668);
+frmObrazyCyfrowe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+frmObrazyCyfrowe.getContentPane().setLayout(null);
+Orginal_l.setHorizontalAlignment(SwingConstants.CENTER);
+Orginal_l.setBounds(0, 0, 1163, 477);
+frmObrazyCyfrowe.getContentPane().add(Orginal_l);
+JButton Orginal = new JButton("Orginal");
+Orginal.setBounds(0, 481, 216, 23);
+Orginal.addMouseListener(new MouseAdapter() { 
+public void mouseClicked(MouseEvent e) {
+	BufferedImage hugeImage = null;
+	try {
+		hugeImage = ImageIO.read(new File(a));
+	} catch (IOException e1) {
+		//// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	Orginal_l.setIcon(new ImageIcon(hugeImage));
+	hugeImage.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+}});
+frmObrazyCyfrowe.getContentPane().add(Orginal);
+JButton HSV = new JButton("HSV");
+HSV.addMouseListener(new MouseAdapter() {
+	@Override 	
+	public void mouseClicked(MouseEvent e) {
+		BufferedImage hugeImage = null;
+		try {
+			hugeImage = ImageIO.read(new File(a));
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		int width = hugeImage.getWidth();
+		int height = hugeImage.getHeight();
+
+		for(int i = 0; i < width; i++ ) {
+			for(int j = 0; j<height; j++) {
+				Color kolor = new Color(hugeImage.getRGB(i, j), true);
+				int r = kolor.getRed();
+				int g = kolor.getGreen();
+				int b = kolor.getBlue();
+				float[] hsv= new float[3];
+				Color.RGBtoHSB(r,g,b,hsv);
+				float odcien = hsv[0];
+				float nasycenie = hsv[1];
+				float biale = hsv[2];
+				Color nowykolor = new Color(odcien,nasycenie,biale);
+				int rgb=nowykolor.getRGB();
+				hugeImage.setRGB(i,j,rgb);
+				hugeImage.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+				Orginal_l.setIcon(new ImageIcon(hugeImage));
+				
+			}}
+	
+	}
+});
+HSV.setBounds(226, 481, 216, 23);
+frmObrazyCyfrowe.getContentPane().add(HSV);
+JButton YUV = new JButton("YUV");
+YUV.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
+		BufferedImage hugeImage = null;
+		try {
+			hugeImage = ImageIO.read(new File(a));
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		int width = hugeImage.getWidth();
+		int height = hugeImage.getHeight();
+
+		for(int i = 0; i < width; i++ ) {
+			for(int j = 0; j<height; j++) {
+				Color kolor = new Color(hugeImage.getRGB(i, j), true);
+				int r = kolor.getRed();
+				int g= kolor.getGreen();
+				int b = kolor.getBlue();
+				int y = (int)(0.299 * r + 0.587 * g + 0.114 * b);
+				int u = (int)(0.493*(b-y));
+				int v = (int)(0.877*(r-y));
+				if(y < 0) {
+					y = 0;
+				}
+				if(u < 0) {
+					u = 0;
+				}
+				if(v < 0) {
+					v = 0;
+				}
+				Color nowykolor = new Color(y,u,v);
+				int rgb=nowykolor.getRGB();
+				hugeImage.setRGB(i,j,rgb);
+				hugeImage.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+				Orginal_l.setIcon(new ImageIcon(hugeImage));
+			}}
+	
+	}
+		
+});
+YUV.setBounds(446, 481, 236, 23);
+frmObrazyCyfrowe.getContentPane().add(YUV);
+
+JButton btnNewButton = new JButton("Szarosc ze sredniej");
+btnNewButton.addMouseListener(new MouseAdapter() {
+	public void mouseClicked(MouseEvent e) {
+		BufferedImage hugeImage = null;
+		try {
+			hugeImage = ImageIO.read(new File(a));
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		int width = hugeImage.getWidth();
+		int height = hugeImage.getHeight();
+
+		for(int i = 0; i < width; i++ ) {
+			for(int j = 0; j<height; j++) {
+				Color kolor = new Color(hugeImage.getRGB(i, j), true);
+				int r = kolor.getRed();
+				int g = kolor.getGreen();
+				int b = kolor.getBlue();
+				int srednia = (r+g+b)/3;
+				float luminacja = (float) ((float) (0.299*r) + (0.587*g) + (0.114*b));
+				
+				System.out.println("Metoda srednia: " + srednia + "Metoda z YUV: " + luminacja);
+			}
+			}}
+	
+});
+
+btnNewButton.setBounds(226, 515, 216, 23);
+frmObrazyCyfrowe.getContentPane().add(btnNewButton);
+JButton Histogram = new JButton("Histogram");
+Histogram.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+	}
+});
+Histogram.setBounds(0, 515, 216, 23);
+frmObrazyCyfrowe.getContentPane().add(Histogram);
+JButton Binaryzacja_U = new JButton("Binaryzacja by User");
+Binaryzacja_U.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	}
+});
+Binaryzacja_U.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		BufferedImage hugeImage = null;
+		try {
+			hugeImage = ImageIO.read(new File(a));
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println("Proszę podać odpowiedni zakres");
+		Scanner scan = new Scanner(System.in);
+			String zakres = scan.nextLine();
+			int zakres_i = Integer.parseInt(zakres);
+		int width = hugeImage.getWidth();
+		int height = hugeImage.getHeight();
+		for(int i = 0; i < width; i++ ) {
+			for(int j = 0; j<height; j++) {
+				Color kolor = new Color(hugeImage.getRGB(i, j), true);
+				int r = kolor.getRed();
+				int g = kolor.getGreen();
+				int b = kolor.getBlue();
+				int srednia = (r+g+b)/3;
+				if(srednia >= zakres_i) {
+					r = 255; g = 255; b = 255;
+				}
+				if(srednia < zakres_i) {
+					r = 0; g = 0; b = 0;
+				}
+				Color nowykolor = new Color(r,g,b);
+				int rgb=nowykolor.getRGB();
+				hugeImage.setRGB(i,j,rgb);
+				hugeImage.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+				Orginal_l.setIcon(new ImageIcon(hugeImage));
+			}
+}}});
+Binaryzacja_U.setBounds(692, 481, 236, 23);
+frmObrazyCyfrowe.getContentPane().add(Binaryzacja_U);
+
+JButton Binaryzacja_S = new JButton("Binaryzacja Statyczna");
+Binaryzacja_S.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		BufferedImage hugeImage = null;
+		try {
+			hugeImage = ImageIO.read(new File(a));
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		int zakres = 85;
+		int width = hugeImage.getWidth();
+		int height = hugeImage.getHeight();
+		for(int i = 0; i < width; i++ ) {
+			for(int j = 0; j<height; j++) {
+				Color kolor = new Color(hugeImage.getRGB(i, j), true);
+				int r = kolor.getRed();
+				int g = kolor.getGreen();
+				int b = kolor.getBlue();
+				int srednia = (r+g+b)/3;
+				if(srednia >= zakres) {
+					r = 255; g = 255; b = 255;
+				}
+				if(srednia < zakres) {
+					r = 0; g = 0; b = 0;
+				}
+				Color nowykolor = new Color(r,g,b);
+				int rgb=nowykolor.getRGB();
+				hugeImage.setRGB(i,j,rgb);
+				hugeImage.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+				Orginal_l.setIcon(new ImageIcon(hugeImage));
+			}
+	}}
+});
+Binaryzacja_S.setBounds(938, 481, 236, 23);
+frmObrazyCyfrowe.getContentPane().add(Binaryzacja_S);
+
+JButton Multiprogramowanie = new JButton("Multiprogramowanie");
+Multiprogramowanie.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		BufferedImage hugeImage = null;
+		try {
+			hugeImage = ImageIO.read(new File(a));
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+			System.out.println("Proszę podać próg minimalny");
+			Scanner scan = new Scanner(System.in);
+			String zakres_min = scan.nextLine();
+			int zakres_imin = Integer.parseInt(zakres_min);
+			System.out.println("Proszę podać próg maksymlany");
+			String zakres_max = scan.nextLine();
+			int zakres_imax = Integer.parseInt(zakres_max);
+		
+		int width = hugeImage.getWidth();
+		int height = hugeImage.getHeight();
+		for(int i = 0; i < width; i++ ) {
+			for(int j = 0; j<height; j++) {
+				Color kolor = new Color(hugeImage.getRGB(i, j), true);
+				int r = kolor.getRed();
+				int g = kolor.getGreen();
+				int b = kolor.getBlue();
+				int srednia = (r+g+b)/3;
+				if(srednia <= zakres_imax & srednia >= zakres_imin) {
+					r = 255; g = 255; b = 255;
+				}
+				else {
+					r = 0; g = 0; b = 0;
+				}
+				Color nowykolor = new Color(r,g,b);
+				int rgb=nowykolor.getRGB();
+				hugeImage.setRGB(i,j,rgb);
+				hugeImage.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+				Orginal_l.setIcon(new ImageIcon(hugeImage));
+	}}}
+});
+Multiprogramowanie.setBounds(446, 515, 236, 23);
+frmObrazyCyfrowe.getContentPane().add(Multiprogramowanie);
+
+JButton btnNewButton_1 = new JButton("Odejmowanie obrazków");
+btnNewButton_1.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		BufferedImage hugeImage_orginal = null;
+		BufferedImage hugeImage_odejmowany  = null;
+		try {
+			hugeImage_orginal = ImageIO.read(new File(orginal));
+			hugeImage_odejmowany = ImageIO.read(new File(odejmowane));
+			
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		int width_org = hugeImage_orginal.getWidth();
+		int height_org = hugeImage_orginal.getHeight();
+		for(int i = 0; i < width_org; i++ ) {
+			for(int j = 0; j<height_org; j++) {
+				Color kolor_o = new Color(hugeImage_orginal.getRGB(i, j), true);
+				int r_o = kolor_o.getRed();
+				int g_o = kolor_o.getGreen();
+				int b_o = kolor_o.getBlue();
+				int luminacja_o = (r_o+g_o+b_o)/3;
+				Color kolor_ode = new Color(hugeImage_odejmowany.getRGB(i, j), true);
+				int r_ode = kolor_ode.getRed();
+				int g_ode = kolor_ode.getGreen();
+				int b_ode = kolor_ode.getBlue();
+				int luminacja_ode = (r_ode+g_ode+b_ode)/3;
+				int odejmowanie_wartosci = luminacja_o - luminacja_ode;
+				if(odejmowanie_wartosci < 0) {
+					odejmowanie_wartosci = 0;
+				}
+				Color nowykolor = new Color(odejmowanie_wartosci,odejmowanie_wartosci,odejmowanie_wartosci);
+				int rgb=nowykolor.getRGB();
+				hugeImage_odejmowany.setRGB(i,j,rgb);
+				hugeImage_odejmowany.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+				Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));
+			}}
+	}
+});
+btnNewButton_1.setBounds(692, 515, 236, 23);
+frmObrazyCyfrowe.getContentPane().add(btnNewButton_1);
+JButton btnNewButton_2 = new JButton("Wykrywanie krawędzi pionowe");
+btnNewButton_2.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		BufferedImage hugeImage_orginal = null;
+		BufferedImage hugeImage_odejmowany  = null;
+		try {
+			hugeImage_orginal = ImageIO.read(new File(orginal));
+			hugeImage_odejmowany = ImageIO.read(new File(odejmowane));
+			
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		int width_org = hugeImage_orginal.getWidth();
+		int height_org = hugeImage_orginal.getHeight();
+		for(int i = 0; i < width_org; i++ ) {
+			for(int j = 0; j<height_org; j++) {
+				Color kolor_o = new Color(hugeImage_orginal.getRGB(i, j), true); //orginal
+				int r_o = kolor_o.getRed();
+				int g_o = kolor_o.getGreen();
+				int b_o = kolor_o.getBlue();
+				int srednia_o = (r_o + g_o + b_o)/3;
+				System.out.println("SO" + srednia_o);
+				
+				if(i+1 >= height_org) {
+				Color kolor_odejmowany = new Color(hugeImage_odejmowany.getRGB(i, j),true); 
+				int r_odej = kolor_odejmowany.getRed();
+				int g_odej = kolor_odejmowany.getGreen();
+				int b_odej = kolor_odejmowany.getBlue();
+				int srednia_odejmowana =  (r_odej + g_odej + b_odej)/3;
+				System.out.println("SOdejmowana" + srednia_odejmowana);
+				int krawedz_pozioma = srednia_o - srednia_odejmowana;
+				if(krawedz_pozioma < 0) {
+					krawedz_pozioma = 0;
+				}
+				Color poziomy = new Color(krawedz_pozioma, krawedz_pozioma, krawedz_pozioma);
+				int rgb=poziomy.getRGB();
+				hugeImage_odejmowany.setRGB(i,j,rgb);
+				hugeImage_odejmowany.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+				Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));
+				}
+				if(i+1 < height_org) {
+				Color kolor_odejmowany = new Color(hugeImage_odejmowany.getRGB(i+1, j),true); 
+				int r_odej = kolor_odejmowany.getRed();
+				int g_odej = kolor_odejmowany.getGreen();
+				int b_odej = kolor_odejmowany.getBlue();
+				int srednia_odejmowana =  (r_odej + g_odej + b_odej)/3;
+				System.out.println("SOdejmowana" + srednia_odejmowana);
+				int krawedz_pozioma = srednia_o - srednia_odejmowana;
+				if(krawedz_pozioma < 0) {
+					krawedz_pozioma = 0;
+				}
+				Color poziomy = new Color(krawedz_pozioma, krawedz_pozioma, krawedz_pozioma);
+				int rgb=poziomy.getRGB();
+				hugeImage_odejmowany.setRGB(i,j,rgb);
+				hugeImage_odejmowany.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+				Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));
+				Pionowe = (BufferedImage) hugeImage_odejmowany; 
+				}
+	}}}
+});
+btnNewButton_2.setBounds(938, 515, 236, 23);
+frmObrazyCyfrowe.getContentPane().add(btnNewButton_2);
+JButton btnNewButton_3 = new JButton("Wykrywanie krawędzi poziome");
+btnNewButton_3.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		BufferedImage hugeImage_orginal = null;
+		BufferedImage hugeImage_odejmowany  = null;
+		try {
+			hugeImage_orginal = ImageIO.read(new File(orginal));
+			hugeImage_odejmowany = ImageIO.read(new File(odejmowane));
+			
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		int width_org = hugeImage_orginal.getWidth();
+		int height_org = hugeImage_orginal.getHeight();
+		for(int i = 0; i <height_org; i++ ) {
+			for(int j = 0; j<width_org; j++) {
+				Color kolor_o = new Color(hugeImage_orginal.getRGB(i,j), true); //orginal
+				int r_o = kolor_o.getRed();
+				int g_o = kolor_o.getGreen();
+				int b_o = kolor_o.getBlue();
+				int srednia_o = (r_o + g_o + b_o)/3;
+				if(j+1 >= width_org) {
+					Color kolor_odejmowany2 = new Color(hugeImage_odejmowany.getRGB(i, j),true);
+					int r_odej2 = kolor_odejmowany2.getRed();
+					int g_odej2 = kolor_odejmowany2.getGreen();
+					int b_odej2 = kolor_odejmowany2.getBlue();
+					int srednia_odejmowana2 =  (r_odej2 + g_odej2 + b_odej2)/3;
+					int krawedz_pionowa = srednia_o - srednia_odejmowana2;
+					if(krawedz_pionowa < 0) {
+						krawedz_pionowa = 0;
+					}
+					Color pionowy = new Color(krawedz_pionowa, krawedz_pionowa, krawedz_pionowa);
+					int pionowa=pionowy.getRGB();
+					hugeImage_odejmowany.setRGB(i,j,pionowa);
+					hugeImage_odejmowany.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+					Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));
+				}
+				if(j+1 < width_org) {
+				Color kolor_odejmowany2 = new Color(hugeImage_odejmowany.getRGB(i, j+1),true); //pionowe
+				int r_odej2 = kolor_odejmowany2.getRed();
+				int g_odej2 = kolor_odejmowany2.getGreen();
+				int b_odej2 = kolor_odejmowany2.getBlue();
+				int srednia_odejmowana2 =  (r_odej2 + g_odej2 + b_odej2)/3;
+				int krawedz_pionowa = srednia_o - srednia_odejmowana2;
+				if(krawedz_pionowa < 0) {
+					krawedz_pionowa = 0;
+				}
+				Color pionowy = new Color(krawedz_pionowa, krawedz_pionowa, krawedz_pionowa);
+				int pionowa=pionowy.getRGB();
+				hugeImage_odejmowany.setRGB(i,j,pionowa);
+				hugeImage_odejmowany.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+				Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));
+				Poziome = (BufferedImage) hugeImage_odejmowany; 
+				}
+	}}}
+});
+btnNewButton_3.setBounds(0, 549, 216, 23);
+frmObrazyCyfrowe.getContentPane().add(btnNewButton_3);
+JButton btnNewButton_4 = new JButton("Wykrywanie krawędzi ukośne");
+btnNewButton_4.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+		int width_org = Poziome.getWidth();
+		int height_org = Poziome.getHeight();
+		for(int i = 0; i <height_org; i++ ) {
+			for(int j = 0; j<width_org; j++) {
+				Color kolor_o = new Color(Poziome.getRGB(i, j), true); //Poziomy
+				int r_o = kolor_o.getRed();
+				int g_o = kolor_o.getGreen();
+				int b_o = kolor_o.getBlue();
+				int srednia_o = (r_o + g_o + b_o)/3;
+				Color kolor_odejmowany2 = new Color(Pionowe.getRGB(i, j),true); //Pionowy
+				int r_odej2 = kolor_odejmowany2.getRed();
+				int g_odej2 = kolor_odejmowany2.getGreen();
+				int b_odej2 = kolor_odejmowany2.getBlue();
+				int srednia_odejmowana2 =  (r_odej2 + g_odej2 + b_odej2)/3;
+				int krawedz_pionowa = srednia_o + srednia_odejmowana2;
+				if(krawedz_pionowa < 0) {
+					krawedz_pionowa = 0;
+				}
+				Color pionowy = new Color(krawedz_pionowa, krawedz_pionowa, krawedz_pionowa);
+				int pionowa=pionowy.getRGB();
+				hugeImage_odejmowany.setRGB(i,j,pionowa);
+				hugeImage_odejmowany.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+				Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));			
+				}
+			}}
+});
+btnNewButton_4.setBounds(226, 549, 216, 23);
+frmObrazyCyfrowe.getContentPane().add(btnNewButton_4);
+}
+}
