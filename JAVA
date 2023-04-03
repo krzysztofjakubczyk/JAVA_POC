@@ -495,31 +495,57 @@ JButton btnNewButton_4 = new JButton("Wykrywanie krawędzi ukośne");
 btnNewButton_4.addMouseListener(new MouseAdapter() {
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
-		int width_org = Poziome.getWidth();
-		int height_org = Poziome.getHeight();
+		BufferedImage hugeImage_orginal = null;
+		BufferedImage hugeImage_odejmowany  = null;
+		try {
+			hugeImage_orginal = ImageIO.read(new File(orginal));
+			hugeImage_odejmowany = ImageIO.read(new File(odejmowane));
+			
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		int width_org = hugeImage_orginal.getWidth();
+		int height_org = hugeImage_orginal.getHeight();
 		for(int i = 0; i <height_org; i++ ) {
 			for(int j = 0; j<width_org; j++) {
-				Color kolor_o = new Color(Poziome.getRGB(i, j), true); //Poziomy
+				Color kolor_o = new Color(hugeImage_orginal.getRGB(i,j), true); //orginal
 				int r_o = kolor_o.getRed();
 				int g_o = kolor_o.getGreen();
 				int b_o = kolor_o.getBlue();
-				int srednia_o = (r_o + g_o + b_o)/3;
-				Color kolor_odejmowany2 = new Color(Pionowe.getRGB(i, j),true); //Pionowy
+				int srednia_o = (r_o + g_o + b_o)/3; //srednia dla org
+				if(j+1 >= width_org | i+1 >= height_org) {
+					Color kolor_odejmowany21 = new Color(hugeImage_odejmowany.getRGB(i, j),true);
+					int r_odej2 = kolor_odejmowany21.getRed();
+					int g_odej2 = kolor_odejmowany21.getGreen();
+					int b_odej2 = kolor_odejmowany21.getBlue();
+					int srednia_odejmowana2 =  (r_odej2 + g_odej2 + b_odej2)/3;
+					int krawedz_ukosna = srednia_o - srednia_odejmowana2;
+					if(krawedz_ukosna < 0) {
+						krawedz_ukosna = 0;
+					}
+					Color pionowy = new Color(krawedz_ukosna, krawedz_ukosna, krawedz_ukosna);
+					int pionowa=pionowy.getRGB();
+					hugeImage_odejmowany.setRGB(i,j,pionowa);
+					hugeImage_odejmowany.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+					Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));
+				}
+				if(j+1 < width_org & i+1 < height_org) {
+				Color kolor_odejmowany2 = new Color(hugeImage_odejmowany.getRGB(i+1, j+1),true); //pionowe
 				int r_odej2 = kolor_odejmowany2.getRed();
 				int g_odej2 = kolor_odejmowany2.getGreen();
 				int b_odej2 = kolor_odejmowany2.getBlue();
 				int srednia_odejmowana2 =  (r_odej2 + g_odej2 + b_odej2)/3;
-				int krawedz_pionowa = srednia_o + srednia_odejmowana2;
-				if(krawedz_pionowa < 0) {
-					krawedz_pionowa = 0;
+				int krawedz_ukosna = srednia_o - srednia_odejmowana2;
+				if(krawedz_ukosna < 0) {
+					krawedz_ukosna = 0;
 				}
-				Color pionowy = new Color(krawedz_pionowa, krawedz_pionowa, krawedz_pionowa);
+				Color pionowy = new Color(krawedz_ukosna, krawedz_ukosna, krawedz_ukosna);
 				int pionowa=pionowy.getRGB();
 				hugeImage_odejmowany.setRGB(i,j,pionowa);
 				hugeImage_odejmowany.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
-				Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));			
-				}
+				Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));
+				}}
 			}}
 });
 btnNewButton_4.setBounds(226, 549, 216, 23);
