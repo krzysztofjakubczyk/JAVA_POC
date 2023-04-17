@@ -30,6 +30,8 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
+import java.awt.Window.Type;
 
 public class Zmienianie_kolorow extends EqualizeHist{
 JLabel Orginal_l = new JLabel("Orygianlne");
@@ -428,7 +430,7 @@ btnNewButton_2.addMouseListener(new MouseAdapter() {
 				}
 	}}}
 });
-btnNewButton_2.setBounds(0, 224, 236, 112);
+btnNewButton_2.setBounds(0, 224, 209, 112);
 frmObrazyCyfrowe.getContentPane().add(btnNewButton_2);
 JButton btnNewButton_3 = new JButton("Wykrywanie krawędzi poziome");
 btnNewButton_3.addMouseListener(new MouseAdapter() {
@@ -488,7 +490,7 @@ btnNewButton_3.addMouseListener(new MouseAdapter() {
 				}
 	}}}
 });
-btnNewButton_3.setBounds(233, 224, 209, 112);
+btnNewButton_3.setBounds(199, 224, 209, 112);
 frmObrazyCyfrowe.getContentPane().add(btnNewButton_3);
 JButton btnNewButton_4 = new JButton("Wykrywanie krawędzi ukośne");
 btnNewButton_4.addMouseListener(new MouseAdapter() {
@@ -546,7 +548,7 @@ btnNewButton_4.addMouseListener(new MouseAdapter() {
 				}}
 			}}
 });
-btnNewButton_4.setBounds(439, 224, 188, 112);
+btnNewButton_4.setBounds(403, 224, 224, 112);
 frmObrazyCyfrowe.getContentPane().add(btnNewButton_4);
 JButton btnNewButton_5 = new JButton("Filtracja dolnoprzepustowa");
 btnNewButton_5.addMouseListener(new MouseAdapter() {
@@ -622,7 +624,7 @@ btnNewButton_5.addMouseListener(new MouseAdapter() {
 			}
 	}}
 });
-btnNewButton_5.setBounds(0, 384, 236, 112);
+btnNewButton_5.setBounds(0, 347, 209, 112);
 frmObrazyCyfrowe.getContentPane().add(btnNewButton_5);
 JButton btnNewButton_6 = new JButton("Filtracja górnoprzepustowa");
 btnNewButton_6.addMouseListener(new MouseAdapter() {
@@ -698,22 +700,23 @@ btnNewButton_6.addMouseListener(new MouseAdapter() {
 			}
 	}}
 });
-btnNewButton_6.setBounds(233, 384, 209, 112);
+btnNewButton_6.setBounds(199, 347, 209, 112);
 frmObrazyCyfrowe.getContentPane().add(btnNewButton_6);
-JButton btnNewButton_7 = new JButton("Filtr wykrywający krawędzie");
+JButton btnNewButton_7 = new JButton("Filtr wykrywający krawędzie ukosne");
+btnNewButton_7.setFont(new Font("Tahoma", Font.PLAIN, 11));
 btnNewButton_7.addMouseListener(new MouseAdapter() {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		int [][] matryca = new int[3][3];
-		matryca[0][0] = 0;
-		matryca[0][1] = -1;
-		matryca[0][2] = 0;
-		matryca[1][0] = -1;
+		matryca[0][0] = -1;
+		matryca[0][1] = 0;
+		matryca[0][2] = -1;
+		matryca[1][0] = 0;
 		matryca[1][1] = 4;
-		matryca[1][2] = -1;
-		matryca[2][0] = 0;
-		matryca[2][1] = -1;
-		matryca[2][2] = 0;
+		matryca[1][2] = 0;
+		matryca[2][0] = -1;
+		matryca[2][1] = 0;
+		matryca[2][2] = -1;
 		int suma = 1;
 		try {	
 			hugeImage_orginal = ImageIO.read(new File(orginal));
@@ -728,14 +731,11 @@ btnNewButton_7.addMouseListener(new MouseAdapter() {
 		for(int i = 1; i <height_org-1; i++ ) {
 			for(int j = 1; j<width_org-1; j++) {
 				Color kolor_o = new Color(hugeImage_orginal.getRGB(i,j), true); //orginal
-				int r_o = kolor_o.getRed();
-				int g_o = kolor_o.getGreen();
-				int b_o = kolor_o.getBlue();
+				int r_o = 0;
+				int g_o = 0;
+				int b_o = 0;
 					for(int k = 0; k < 3; k++) {
 						for(int l = 0; l < 3; l++) {
-							if(k == 1 & l == 1 ) {
-								continue;
-							}
 							Color kolor_obok = new Color(hugeImage_orginal.getRGB((i-k)+1,(j-l)+1), true);
 							int r= kolor_obok.getRed();
 							int g= kolor_obok.getGreen();
@@ -774,7 +774,7 @@ btnNewButton_7.addMouseListener(new MouseAdapter() {
 			}
 	}}
 });
-btnNewButton_7.setBounds(439, 384, 209, 112);
+btnNewButton_7.setBounds(404, 347, 223, 112);
 frmObrazyCyfrowe.getContentPane().add(btnNewButton_7);
 JButton btnNewButton_8 = new JButton("Własny obrazek");
 btnNewButton_8.addMouseListener(new MouseAdapter() {
@@ -829,5 +829,151 @@ btnNewButton_9.addMouseListener(new MouseAdapter() {
 });
 btnNewButton_9.setBounds(326, 54, 301, 23);
 frmObrazyCyfrowe.getContentPane().add(btnNewButton_9);
+JButton btnNewButton_10 = new JButton("Filtr wykrywający krawędzie poziome");
+btnNewButton_10.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int [][] matryca = new int[3][3];
+		matryca[0][0] = 0;
+		matryca[0][1] = -1;
+		matryca[0][2] = 0;
+		matryca[1][0] = 0;
+		matryca[1][1] = 2;
+		matryca[1][2] = 0;
+		matryca[2][0] = 0;
+		matryca[2][1] = -1;
+		matryca[2][2] = 0;
+		int suma = 1;
+		try {	
+			hugeImage_orginal = ImageIO.read(new File(orginal));
+			hugeImage_odejmowany = ImageIO.read(new File(odejmowane));
+			
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		int width_org = hugeImage_orginal.getWidth();
+		int height_org = hugeImage_orginal.getHeight();
+		for(int i = 1; i <height_org-1; i++ ) {
+			for(int j = 1; j<width_org-1; j++) {
+				Color kolor_o = new Color(hugeImage_orginal.getRGB(i,j), true); //orginal
+				int r_o = 0;
+				int g_o = 0;
+				int b_o = 0;
+					for(int k = 0; k < 3; k++) {
+						for(int l = 0; l < 3; l++) {
+							Color kolor_obok = new Color(hugeImage_orginal.getRGB((i-k)+1,(j-l)+1), true);
+							int r= kolor_obok.getRed();
+							int g= kolor_obok.getGreen();
+							int b= kolor_obok.getBlue();
+							r_o += r * matryca[k][l];
+							g_o += g * matryca[k][l];
+							b_o += b * matryca[k][l];
+					}	
+				}
+					r_o /= suma;
+					g_o /= suma;
+					b_o /= suma;
+					if(r_o > 255) {
+						r_o = 255;
+					}
+					else if(r_o<0) {
+						r_o = 0;
+					}
+					if(g_o > 255) {
+						g_o = 255;
+					}
+					else if(g_o<0) {
+						g_o = 0;
+					}
+					if(b_o > 255) {
+						b_o = 255;
+					}
+					else if(b_o<0) {
+						b_o = 0;
+					}
+					Color pionowy = new Color(r_o, g_o, b_o);
+					int pionowa=pionowy.getRGB();
+					hugeImage_odejmowany.setRGB(i,j,pionowa);
+					hugeImage_odejmowany.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+					Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));
+			}
+	}}
+});
+btnNewButton_10.setBounds(0, 470, 236, 112);
+frmObrazyCyfrowe.getContentPane().add(btnNewButton_10);
+JButton btnNewButton_11 = new JButton("Filtr wykrywający krawędzie pionowe");
+btnNewButton_11.addMouseListener(new MouseAdapter() {
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int [][] matryca = new int[3][3];
+		matryca[0][0] = 0;
+		matryca[0][1] = 0;
+		matryca[0][2] = 0;
+		matryca[1][0] = -1;
+		matryca[1][1] = 2;
+		matryca[1][2] = -1;
+		matryca[2][0] = 0;
+		matryca[2][1] = 0;
+		matryca[2][2] = 0;
+		int suma = 1;
+		try {	
+			hugeImage_orginal = ImageIO.read(new File(orginal));
+			hugeImage_odejmowany = ImageIO.read(new File(odejmowane));
+			
+		} catch (IOException e1) {
+			//// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		int width_org = hugeImage_orginal.getWidth();
+		int height_org = hugeImage_orginal.getHeight();
+		for(int i = 1; i <height_org-1; i++ ) {
+			for(int j = 1; j<width_org-1; j++) {
+				Color kolor_o = new Color(hugeImage_orginal.getRGB(i,j), true); //orginal
+				int r_o = 0;
+				int g_o = 0;
+				int b_o = 0;
+					for(int k = 0; k < 3; k++) {
+						for(int l = 0; l < 3; l++) {
+							Color kolor_obok = new Color(hugeImage_orginal.getRGB((i-k)+1,(j-l)+1), true);
+							int r= kolor_obok.getRed();
+							int g= kolor_obok.getGreen();
+							int b= kolor_obok.getBlue();
+							r_o += r * matryca[k][l];
+							g_o += g * matryca[k][l];
+							b_o += b * matryca[k][l];
+					}	
+				}
+					r_o /= suma;
+					g_o /= suma;
+					b_o /= suma;
+					if(r_o > 255) {
+						r_o = 255;
+					}
+					else if(r_o<0) {
+						r_o = 0;
+					}
+					if(g_o > 255) {
+						g_o = 255;
+					}
+					else if(g_o<0) {
+						g_o = 0;
+					}
+					if(b_o > 255) {
+						b_o = 255;
+					}
+					else if(b_o<0) {
+						b_o = 0;
+					}
+					Color pionowy = new Color(r_o, g_o, b_o);
+					int pionowa=pionowy.getRGB();
+					hugeImage_odejmowany.setRGB(i,j,pionowa);
+					hugeImage_odejmowany.getScaledInstance(Orginal_l.getWidth(), Orginal_l.getHeight(), Image.SCALE_DEFAULT);
+					Orginal_l.setIcon(new ImageIcon(hugeImage_odejmowany));
+			}
+	}}
+});
+btnNewButton_11.setBounds(229, 470, 236, 112);
+frmObrazyCyfrowe.getContentPane().add(btnNewButton_11);
 }
 }
