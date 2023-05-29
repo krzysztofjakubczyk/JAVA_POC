@@ -3,21 +3,29 @@ import imutils as imutils
 import numpy as np
 
 def rozpoznaj_kolor(h, s, v):
-    if 0 <= h < 15 and s > 50 and v > 50:
+    if 0 <= h < 10 and s > 50 and v > 50:
         return "czerwony"
-    if 15 <= h < 45 and s > 50 and v > 50:
-        return "pomarańczowy"
-    if 45 <= h < 75 and s > 50 and v > 50:
-        return "zolty"
-    if 75 <= h < 150 and s > 50 and v > 50:
+    elif 160 <= h < 179 and s > 50 and v > 50:
+        return "czerwony"
+    elif 278 <= h < 390 and s > 50 and v > 50:
+        return "czerwony"
+    elif 10 <= h < 20 and s > 50 and v > 50:
+        return "pomaranczowy"
+    elif 45 <= h < 75 and s > 50 and v > 50:
         return "zielony"
-    if 150 <= h < 253 and s > 50 and v > 50:
+    elif 85 <= h < 135 and s > 50 and v > 50:
         return "niebieski"
-    if 253 <= h < 331 and s > 50 and v > 50:
+    elif 155 <= h < 160 and s > 50 and v > 50:
+        return "niebieski"
+    elif 180 <= h < 200 and s > 50 and v > 50:
+        return "niebieski"
+    elif 135 <= h < 145 and s > 50 and v > 50:
         return "fioletowy"
-    if s < 50 and v > 50:
+    elif 146 <= h < 155 and s > 50 and v > 50:
+        return "rozowy"
+    elif 0<h<=1:
         return "bialy"
-    if s > 50 and v < 50:
+    elif h == 0:
         return "czarny"
     else:
         return "inny"
@@ -53,7 +61,7 @@ for cnt in contours:
     kolor = rozpoznaj_kolor(wartosci_h, wartosci_s, wartosci_v)
     approx = cv.approxPolyDP(cnt, 0.01 * cv.arcLength(cnt, True), True)
     if len(approx) == 4:
-        cv.putText(im, 'kwadrat ' + str(kolor), (x-100,y), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 1, cv.LINE_AA)
+        cv.putText(im, 'kwadrat ' + str(kolor), (x-100,y), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 1, cv.LINE_AA)
     elif len(approx) == 3:
         cv.putText(im, 'trojkat ' + str(kolor), (x-100,y), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 1, cv.LINE_AA)
     else:
