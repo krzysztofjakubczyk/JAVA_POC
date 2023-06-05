@@ -1,13 +1,13 @@
 import cv2 as cv
 import imutils as imutils
 import numpy as np
-
+#Rozpoznawanie kolorow- zadanie 1
 def rozpoznaj_kolor(h, s, v):
-    if 0 <= h < 10 and s > 50 and v > 50:
+    if 0 <= h <= 10 and s > 50 and v > 50:
         return "czerwony"
-    elif 160 <= h < 179 and s > 50 and v > 50:
+    elif 160 <= h <= 180 and s > 50 and v > 50:
         return "czerwony"
-    elif 278 <= h < 390 and s > 50 and v > 50:
+    elif 331 <= h < 360 and s > 50 and v > 50:
         return "czerwony"
     elif 10 <= h < 20 and s > 50 and v > 50:
         return "pomaranczowy"
@@ -15,13 +15,13 @@ def rozpoznaj_kolor(h, s, v):
         return "zielony"
     elif 85 <= h < 135 and s > 50 and v > 50:
         return "niebieski"
-    elif 155 <= h < 160 and s > 50 and v > 50:
-        return "niebieski"
-    elif 180 <= h < 200 and s > 50 and v > 50:
+    elif 181 <= h < 200 and s > 50 and v > 50:
         return "niebieski"
     elif 135 <= h < 145 and s > 50 and v > 50:
         return "fioletowy"
     elif 146 <= h < 155 and s > 50 and v > 50:
+        return "rozowy"
+    elif 290 <= h < 330 and s > 50 and v > 50:
         return "rozowy"
     elif 0<h<=1:
         return "bialy"
@@ -49,15 +49,6 @@ for cnt in contours:
     wartosci_v = obraz_hsv[y, x, 2]
     wartosci_s = obraz_hsv[y, x, 1]
     wartosci_h = obraz_hsv[y, x, 0]
-    # wartosci_v2 = imhsv[y+1, x+1, 2]
-    # wartosci_s2 = imhsv[y+1, x+1, 1]
-    # wartosci_h2 = imhsv[y+1, x+1, 0]
-    # wartosci_v3 = imhsv[y+1, x, 2]
-    # wartosci_s3 = imhsv[y+1, x, 1]
-    # wartosci_h3 = imhsv[y+1, x, 0]
-    # wartosci_v4 = imhsv[y, x+1, 2]
-    # wartosci_s4 = imhsv[y, x+1, 1]
-    # wartosci_h4 = imhsv[y, x+1, 0]
     kolor = rozpoznaj_kolor(wartosci_h, wartosci_s, wartosci_v)
     approx = cv.approxPolyDP(cnt, 0.01 * cv.arcLength(cnt, True), True)
     if len(approx) == 4:
@@ -69,3 +60,4 @@ for cnt in contours:
 
 cv.imshow("Pierwszy program w pythonie", im)
 cv.waitKey(0)
+#Zadanie 2- rozpoznawanie ksztaltu sygnalizatora
